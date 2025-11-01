@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tri Ân Người Gieo Hạt - THCS Thái Thịnh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cover-bg: #76b852;
+            --accent-color: #4a773c;
+            --page-bg: #ffffff;
+            --page-bg-back: #f7fef6;
+            --primary-text: #3d403a;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Nunito Sans', sans-serif;
+            --transition-speed: 1.2s;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
+            font-family: var(--font-body);
+            overflow: hidden;
+        }
+
+        .main-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 2000px;
+        }
+        
+        .book {
+            width: 400px;
+            height: 550px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
+        }
+        
+        .main-container.book-is-open .book {
+            transform: translateX(50%);
+        }
+
+        .book .page {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: left;
+            transition: transform var(--transition-speed) cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            background-color: var(--page-bg);
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .page::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 5px;
+            width: 5px;
+            height: 100%;
+            background: rgba(0,0,0,0.05);
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .cover-front-content {
+            background: linear-gradient(45deg, var(--accent-color), var(--cover-bg));
+            color: white;
+            border-radius: 0 10px 10px 0;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .cover-front-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            margin: 15px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .cover-front-wrapper h1 {
+            font-family: var(--font-heading);
+            font-size: 2.8em;
+            margin: 0;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .cover-front-wrapper p {
+            font-size: 1.1em;
+            font-style: italic;
+            margin: 10px 0 20px 0;
+        }
+        
+        .ribbon {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .ribbon span {
+            position: absolute;
+            display: block;
+            width: 225px;
+            padding: 15px 0;
+            background-color: var(--accent-color);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            right: -25px;
+            top: 30px;
+            transform: rotate(45deg);
+        }
+
+        .page .front-page-content, .page .back-page-content {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            color: var(--primary-text);
+            text-align: center;
+            backface-visibility: hidden;
+        }
+        
+        .page .front-page-content { background: var(--page-bg); transform: rotateY(0deg); }
+        .page .back-page-content { background: var(--page-bg-back); transform: rotateY(180deg); }
+        
+        .page-content-wrapper h2 {
+            font-family: var(--font-heading);
+            color: var(--accent-color);
+            font-size: 1.8em;
+            margin: 0 0 15px 0;
+        }
+        
+        .page-content-wrapper p { line-height: 1.8; font-size: 1em; }
+
+        .page-image {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        #back-cover-page .front-page-content {
+            background: linear-gradient(45deg, var(--accent-color), var(--cover-bg));
+            color: white;
+            border-radius: 0 10px 10px 0;
+        }
+        #back-cover-page .back-page-content {
+            background: linear-gradient(45deg, var(--accent-color), var(--cover-bg));
+        }
+        
+        .back-cover-content-wrapper h3 {
+            font-family: var(--font-heading);
+            font-size: 1.8em;
+            font-weight: normal;
+            line-height: 1.6;
+            margin: 0 0 15px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+        }
+        .back-cover-content-wrapper p {
+            font-style: italic;
+            font-size: 1em;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .flipped { transform: rotateY(-180deg); }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(74, 119, 60, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 2000;
+            transition: all 0.5s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .main-container.book-is-open .nav-btn { opacity: 1; visibility: visible; }
+        .nav-btn:hover { background: var(--accent-color); transform: translateY(-50%) scale(1.1); }
+        
+        #prev-btn { left: calc(50% - 400px - 40px); }
+        #next-btn { right: calc(50% - 400px - 40px); }
+        
+        .nav-btn.hidden { opacity: 0 !important; visibility: hidden; pointer-events: none; }
+        .nav-btn svg { width: 24px; height: 24px; fill: white; }
+
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 3000;
+        }
+        #music-toggle {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(74, 119, 60, 0.8);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        #music-toggle:hover { transform: scale(1.1); }
+        #music-toggle svg { width: 24px; height: 24px; fill: white; }
+        .hidden-icon { display: none; }
+        
+        @media (max-width: 950px) {
+            #prev-btn { left: 10px; }
+            #next-btn { right: 10px; }
+        }
+
+        @media (max-width: 600px) {
+            .book { transform: scale(0.6); }
+            .main-container.book-is-open .book {
+                transform: translateX(50%) scale(0.6);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container" id="main-container">
+        <div class="book" id="book">
+            <!-- Bìa Trước -->
+            <div class="page" id="cover-page">
+                <div class="front-page-content cover-front-content">
+                    <div class="cover-front-wrapper">
+                        <h1>Tri Ân Người Gieo Hạt</h1>
+                        <p>Kính tặng Thầy Cô THCS Thái Thịnh</p>
+                        <div class="ribbon"><span>20 . 11</span></div>
+                    </div>
+                </div>
+                <div class="back-page-content page-content-wrapper">
+                    <h2 style="font-size: 2.2em;">Lời Ngỏ</h2>
+                    <p style="font-style: italic; font-size: 1.1em; line-height: 1.9;">Cuốn sách nhỏ này là món quà tinh thần được vun đắp từ lòng biết ơn chân thành nhất, xin thay cho vạn lời tri ân chúng con muốn gửi đến Thầy Cô nhân ngày 20 tháng 11.</p>
+                </div>
+            </div>
+
+            <!-- Các Trang Nội Dung -->
+            <div class="page">
+                <div class="front-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/5212335/pexels-photo-5212335.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Người Thầy" class="page-image">
+                    <h2>Người Dẫn Lối</h2>
+                    <p>Nếu cha mẹ cho chúng con hình hài, thì Thầy Cô chính là người trao cho chúng con tâm hồn và tri thức. Cảm ơn Thầy Cô - những người lái đò thầm lặng, những ngọn hải đăng không bao giờ tắt, đã hy sinh cả cuộc đời mình để soi sáng con đường tương lai cho chúng con.</p>
+                </div>
+                <div class="back-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/8363121/pexels-photo-8363121.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Bàn tay viết phấn" class="page-image">
+                    <h2>Hạt Bụi Diệu Kỳ</h2>
+                    <p>Mỗi hạt bụi phấn rơi là một bài học được gieo mầm. Mỗi lời Thầy Cô giảng là một nguồn cảm hứng vô tận. Chúng con trân trọng và biết ơn từng khoảnh khắc quý giá ấy.</p>
+                </div>
+            </div>
+            <div class="page">
+                <div class="front-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/3992870/pexels-photo-3992870.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Thư viện" class="page-image">
+                    <h2>Người Lái Đò Thầm Lặng</h2>
+                    <p>Thầy Cô là những người lái đò tận tụy, vững tay chèo đưa bao thế hệ học trò qua sông. Dòng sông tri thức mênh mông, và công ơn Thầy Cô cũng bao la như thế.</p>
+                </div>
+                <div class="back-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Thầy giáo giúp học sinh" class="page-image">
+                    <h2>Những Điều Nhỏ Bé Phi Thường</h2>
+                    <p>Là bụi phấn vương trên mái tóc, là giọng nói ấm áp khi giảng bài, là ánh mắt lo âu khi chúng con vấp ngã. Chính những điều nhỏ bé ấy đã làm nên người thầy vĩ đại.</p>
+                </div>
+            </div>
+            <div class="page">
+                 <div class="front-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Sân trường nắng vàng" class="page-image">
+                    <h2>Dấu Ấn Thời Gian</h2>
+                    <p>Dưới mái trường này, chúng con đã có những kỷ niệm đẹp nhất. Tiếng cười, bài học, và cả lời răn dạy... tất cả sẽ là hành trang vô giá theo con suốt cuộc đời.</p>
+                </div>
+                <div class="back-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Ngôi trường" class="page-image">
+                    <h2>Lời Từ Trái Tim</h2>
+                    <p>Dù mai này có đi đâu về đâu, hình ảnh Thầy Cô và mái trường Thái Thịnh vẫn sẽ mãi là một phần ký ức ấm áp và tươi đẹp nhất trong trái tim mỗi chúng con.</p>
+                </div>
+            </div>
+             <div class="page">
+                <div class="front-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/716276/pexels-photo-716276.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Cô giáo và học sinh trò chuyện" class="page-image">
+                    <h2>Hành Trang Vào Đời</h2>
+                    <p>Thầy Cô không chỉ dạy chúng con kiến thức sách vở, mà còn dạy chúng con cách làm người, cách đối nhân xử thế. Đó là hành trang quý báu nhất để chúng con vững bước vào đời.</p>
+                </div>
+                <div class="back-page-content page-content-wrapper">
+                     <img src="https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Những người trẻ thành công" class="page-image">
+                    <h2>Lời Hứa Của Tương Lai</h2>
+                    <p>Chúng con xin hứa sẽ không ngừng học hỏi, rèn luyện để trở thành những người có ích, lan tỏa những giá trị tốt đẹp Thầy Cô đã dạy, và làm rạng danh mái trường thân yêu.</p>
+                </div>
+            </div>
+            <div class="page">
+                <div class="front-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/11063632/pexels-photo-11063632.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Tung mũ tốt nghiệp" class="page-image">
+                    <h2>Chắp Cánh Bay Xa</h2>
+                    <p>Kiến thức Thầy Cô trao đã và đang chắp cho chúng con đôi cánh vững chắc để bay vào bầu trời rộng lớn, tự tin chinh phục những ước mơ và hoài bão.</p>
+                </div>
+                <div class="back-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/3992933/pexels-photo-3992933.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Bó hoa" class="page-image">
+                    <h2>Mong Mỏi Bình An</h2>
+                    <p>Nhân ngày Nhà giáo Việt Nam, chúng con kính chúc quý Thầy Cô luôn dồi dào sức khoẻ, tràn đầy nhiệt huyết và luôn tìm thấy niềm vui trong sự nghiệp trồng người cao quý.</p>
+                </div>
+            </div>
+            <div class="page">
+                <div class="front-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/4144101/pexels-photo-4144101.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Viết lời tri ân" class="page-image">
+                    <h2>Thay Lời Kết</h2>
+                    <p>Một lời cảm ơn không thể nào nói hết công lao trời biển của Thầy Cô. Chúng con xin gửi vạn lời tri ân từ tận đáy lòng mình.</p>
+                </div>
+                <div class="back-page-content page-content-wrapper">
+                    <img src="https://images.pexels.com/photos/6194977/pexels-photo-6194977.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Học sinh tặng hoa cô giáo" class="page-image">
+                    <h2>Mãi Yêu Thương!</h2>
+                    <p>Chúc mừng ngày Nhà giáo Việt Nam 20/11!</p>
+                    <h3 style="font-weight: normal; font-size: 1.1em;">Tập thể học sinh<br>Trường THCS Thái Thịnh</h3>
+                </div>
+            </div>
+
+            <!-- Bìa Sau -->
+            <div class="page" id="back-cover-page">
+                <div class="front-page-content back-cover-content-wrapper">
+                    <h3>Cuốn sách khép lại<br>nhưng lòng biết ơn còn mãi...</h3>
+                    <p>Trân trọng</p>
+                </div>
+                <div class="back-page-content">
+                </div>
+            </div>
+        </div>
+        
+        <div id="prev-btn" class="nav-btn">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+        </div>
+        <div id="next-btn" class="nav-btn">
+             <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg>
+        </div>
+    </div>
+
+    <div class="music-player">
+        <audio id="background-music" loop>
+            <source src="./nhacnen.mp3" type="audio/mpeg">
+        </audio>
+
+        <button id="music-toggle">
+            <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+            <svg id="pause-icon" class="hidden-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+        </button>
+    </div>
+
+   <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const AUTO_TURN_DELAY = 8000;
+            const RESET_FLIP_DELAY = 150;
+            const PAUSE_BEFORE_RESET = 3500;
+
+            const mainContainer = document.getElementById('main-container');
+            const pages = document.querySelectorAll('.book .page');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const audioPlayer = document.getElementById('background-music');
+            const musicToggle = document.getElementById('music-toggle');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            let currentPage = 0;
+            const totalPages = pages.length;
+            let autoTurnTimer = null;
+            let isBookOpen = false;
+
+            pages.forEach((page, index) => {
+                page.style.zIndex = totalPages - index;
+            });
+
+            const stopAutoTurn = () => {
+                if (autoTurnTimer) {
+                    clearInterval(autoTurnTimer);
+                    autoTurnTimer = null;
+                }
+            };
+
+            const updateButtons = () => {
+                prevBtn.classList.toggle('hidden', currentPage <= 1);
+            };
+
+            const resetToCover = () => {
+                stopAutoTurn();
+                let delay = 0;
+                for (let i = currentPage - 1; i > 0; i--) {
+                    setTimeout(() => {
+                        pages[i].classList.remove('flipped');
+                        pages[i].style.zIndex = totalPages - i;
+                    }, delay);
+                    delay += RESET_FLIP_DELAY;
+                }
+
+                setTimeout(() => {
+                    pages[0].classList.remove('flipped');
+                    pages[0].style.zIndex = totalPages;
+                    mainContainer.classList.remove('book-is-open');
+                    isBookOpen = false;
+                    currentPage = 0;
+                    updateButtons();
+                }, delay);
+            };
+
+            const startAutoTurn = () => {
+                stopAutoTurn();
+                autoTurnTimer = setInterval(() => {
+                    if (currentPage >= totalPages - 1) {
+                        stopAutoTurn();
+                        setTimeout(resetToCover, PAUSE_BEFORE_RESET);
+                    } else {
+                        goNextPage(true);
+                    }
+                }, AUTO_TURN_DELAY);
+            };
+
+            const openBook = () => {
+                if (isBookOpen) return;
+                mainContainer.classList.add('book-is-open');
+                isBookOpen = true;
+                audioPlayer.play().catch(() => {});
+                goNextPage(true, startAutoTurn);
+            };
+
+            const goNextPage = (isAuto = false, callback) => {
+                if (!isAuto) stopAutoTurn();
+
+                if (currentPage === totalPages - 1) {
+                    resetToCover();
+                    return; 
+                }
+
+                if (currentPage < totalPages - 1) {
+                    pages[currentPage].classList.add('flipped');
+                    pages[currentPage].style.zIndex = totalPages + currentPage;
+                    currentPage++;
+                    updateButtons();
+                    if (callback) {
+                        setTimeout(callback, AUTO_TURN_DELAY / 2);
+                    }
+                }
+            };
+            
+            const goPrevPage = () => {
+                stopAutoTurn();
+                if (currentPage > 1) {
+                    currentPage--;
+                    const pageToUnflip = pages[currentPage];
+                    
+                    pageToUnflip.classList.remove('flipped');
+                    pageToUnflip.style.zIndex = totalPages - currentPage;
+                    updateButtons();
+                }
+            };
+
+            const toggleMusic = () => {
+                if (audioPlayer.paused) audioPlayer.play();
+                else audioPlayer.pause();
+            };
+            
+            audioPlayer.addEventListener('play', () => {
+                playIcon.classList.add('hidden-icon');
+                pauseIcon.classList.remove('hidden-icon');
+            });
+
+            audioPlayer.addEventListener('pause', () => {
+                pauseIcon.classList.add('hidden-icon');
+                playIcon.classList.remove('hidden-icon');
+            });
+            
+            pages[0].addEventListener('click', openBook);
+            nextBtn.addEventListener('click', () => goNextPage(false));
+            prevBtn.addEventListener('click', goPrevPage);
+            musicToggle.addEventListener('click', toggleMusic);
+
+            updateButtons();
+        });
+    </script>
+</body>
+</html>
